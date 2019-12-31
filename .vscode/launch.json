@@ -12,7 +12,10 @@
             "program": "${workspaceFolder}/app.js",
             "restart": true,
             "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         },
         {
             "type": "node",
