@@ -1,16 +1,20 @@
 const Router = require('koa-router')
+const bcrypt = require('bcryptjs')
 const {User} = require('../../models/user')
+const {success} = require('../../lib/helper')
+
 const {RegisterValidator} = require('../../validator/validator')
 const router = new Router({
     prefix:'/v1/user'
 });
 router.post('/register',async (ctx)=>{
-        const v = new RegisterValidator().validate(ctx)
+        const v = await new RegisterValidator().validate(ctx)
         const user = {
             email:v.get('body.email'),
             password:v.get('body.password2'),
             nickname:v.get('body.nickname')
         }
-        user.create(user)
+        await User.create(user)
+        success()
 })
 module.exports = router

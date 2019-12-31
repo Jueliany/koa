@@ -1,4 +1,10 @@
 const {LinValidator, Rule} =  require('../../core/lin-validator')
+const {
+    User
+} = require('../models/user')
+const {
+    LoginType
+} = require('../lib/enum')
 class PositveInterValidator  extends LinValidator {
     constructor() {
         super();
@@ -7,6 +13,7 @@ class PositveInterValidator  extends LinValidator {
         ]
     }
 }
+//注册模块
 class RegisterValidator extends LinValidator {
     constructor() {
         super()
@@ -39,7 +46,69 @@ class RegisterValidator extends LinValidator {
         }
     }
 
+    async validateEmail(vals) {
+        const email = vals.body.email
+            const user = await User.findOne({
+                where: {
+                    email: email
+                }
+            })
+            console.log(user)
+        if (user) {
+            throw new Error('email已存在')
+        }
+    }
 
 }
+//登陆模块
+class TokenValidator extends LinValidator {
+    constructor() {
+        //隐藏的错误
+        // Java
+        // JS Python 
+        super()
+        this.account = [
+            new Rule('isLength', '不符合账号规则', {
+                min: 4,
+                max: 32
+            })
+        ]
+        this.secret = [
+            //    validator.js
+            new Rule('isOptional'),
+            new Rule('isLength', '至少6个字符', {
+                min: 6,
+                max: 128
+            })
+        ]
 
-module.exports = {PositveInterValidator,RegisterValidator}
+    }
+
+    validateLoginType(vals) {
+        if (!vals.body.type) {
+            throw new Error('type是必须参数')
+        }
+        if (!LoginType.isThisType(vals.body.type)) {
+            throw new Error('type参数不合法')
+        }
+    }
+}
+
+
+class NotEmptyValidator extends LinValidator {
+    constructor() {
+        super()
+        this.token = [
+            new Rule('isLength', '不允许为空', {
+                min: 1
+            })
+        ]
+    }
+}
+
+module.exports = {
+    PositveInterValidator,
+    RegisterValidator,
+    TokenValidator,
+    NotEmptyValidator
+}
