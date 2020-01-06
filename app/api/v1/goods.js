@@ -1,5 +1,7 @@
 const Router = require('koa-router')
 const {PositveInterValidator} = require('../../validator/validator')
+const {Goods} = require('../../models/goods')
+const {Type} = require('../../models/type')
 const router = new Router({
     prefix:'/v1/goods'
 });
@@ -12,13 +14,15 @@ router.get('/list',new Auth(8).m, async (ctx,next)=>{
     const query = ctx.request.query;;
     const header = ctx.request.header;
     const body = ctx.request.body;
-    console.log(52220)
-
-    // const v = new PositveInterValidator().validate(ctx)
-    console.log(52220)
-    ctx.body = {
-        key:111
-    }
+    const good = await Goods.findOne({
+        where: {
+            id : 2
+        }
+    })
+    console.log(good)
+    const TypeName = await Type.getType(good.type)
+    good.setDataValue('TypeName',TypeName.name)
+    ctx.body = good
 })
 
 module.exports = router
