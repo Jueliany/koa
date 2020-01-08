@@ -14,14 +14,15 @@ router.get('/list',new Auth(8).m, async (ctx,next)=>{
     const query = ctx.request.query;;
     const header = ctx.request.header;
     const body = ctx.request.body;
-    const good = await Goods.findOne({
-        where: {
-            id : 2
-        }
-    })
+    // const good = await Goods.scope('bh').findAll({
+    //     where: {
+    //         type : [1,2]
+    //     }
+    // })
+    const good = await Goods.getGoodList()
     console.log(good)
-    const TypeName = await Type.getType(good.type)
-    good.setDataValue('TypeName',TypeName.name)
+    // const TypeName = await Type.getType(good.type)
+    // good.setDataValue('TypeName',TypeName.name)
     ctx.body = good
 })
 

@@ -1,4 +1,4 @@
-const {Sequelize,Model} = require('sequelize')
+const {Sequelize,Model,Op} = require('sequelize')
 const {db} = require('../../core/db')
 class Type extends Model {
     static async getType(typeId){
@@ -8,6 +8,19 @@ class Type extends Model {
             }
         })
         return type
+    }
+
+    static async getTypeList(typeIdList){
+        const types = await Type.findAll({
+            where:{
+                id: {
+                    [Op.in]:typeIdList
+                }
+            }
+        })
+
+
+        return types
     }
 }
 Type.init({
