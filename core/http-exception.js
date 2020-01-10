@@ -20,9 +20,9 @@ class ParameterException extends HttpException{
 class Success extends HttpException{
     constructor(msg, errorCode){
         super()
-        this.code = 201
+        this.code = 200
         this.msg = msg || 'ok'
-        this.errorCode = errorCode || 0
+        this.errorCode = errorCode || 100
     }
 }
 
@@ -30,8 +30,8 @@ class NotFound extends HttpException{
     constructor(msg, errorCode) {
         super()
         this.msg = msg || '资源未找到'
-        this.errorCode = errorCode || 10000
-        this.code = 404
+        this.errorCode = errorCode || 101
+        this.code = 200
     }
 }
 
@@ -39,8 +39,8 @@ class AuthFailed  extends HttpException {
     constructor(msg, errorCode) {
         super()
         this.msg = msg || '授权失败'
-        this.errorCode = errorCode || 10004
-        this.code = 401
+        this.errorCode = errorCode || 102
+        this.code = 200
     }
 }
 

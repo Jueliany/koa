@@ -34,6 +34,7 @@ router.post('/',async (ctx)=>{
                 break;
         }
         ctx.body = {
+            resultCode:0,
             token
         }
 })
