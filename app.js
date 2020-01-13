@@ -14,7 +14,7 @@ app.use(async (ctx, next)=> {
     }
   });
 app.use(catchError)
-app.use(parser())
+app.use(parser()) 
 InitManager.initCore(app);
 app.listen(3000)
 console.log('app is starting !')
