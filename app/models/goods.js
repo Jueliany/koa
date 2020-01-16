@@ -4,6 +4,7 @@ const {Category} = require('./category')
 class Goods extends Model {
     //后台列表查询
     static async getGoodList(limit = 10,start = 1,type = 1,categoryId = -1,state = -1,keyWord = ""){
+        console.log(state)
         const good = await Goods.findAndCountAll({
             where: {
                 id : {
@@ -13,12 +14,8 @@ class Goods extends Model {
                     [Op.like]:'%' + keyWord + '%'
                 },
                 type,
-                category_id: categoryId > 0  ? categoryId : {
-                    [Op.not]:1,
-                },
-                state: state >= 0 ? state : {
-                    [Op.not]:2,
-                }
+                category_id: categoryId > 0  ? categoryId : {[Op.not]:1,},
+                state: state != -1 ? state : {[Op.not]:2}
             },
             offset: (start - 1) * limit,
             limit,
@@ -28,13 +25,53 @@ class Goods extends Model {
             }]
         })
         if(!good){
-            console.log('error')
+            throw new global.errs.NotFound('查询失败')
         }
         return good
     }
-    //xinzeng 
+    //详情
+    static async findGood(id){
+        const good = await Goods.findOne({
+            where:{
+                id
+            },
+            attributes:['name','type','category_id','price','stock_number','state','brief','detail','url',]
+        })
+        if(!good){
+            throw new global.errs.NotFound('查询失败')
+        }
+        return good
+    }
+    //新增
     static async addGood(data){
         const good = await Goods.create(data)
+        if(!good){
+            throw new global.errs.AuthFailed('新增失败')
+        }
+        return good
+    }
+    //修改
+    static async updateGood(id,data){
+        const good = await Goods.update(data,{
+            where:{
+                id
+            }
+        })
+        if(good[0] == 0){
+            throw new global.errs.AuthFailed('修改失败')
+        }
+        return good
+    }
+    //删除
+    static async deleteGood(id){
+        const good = await Goods.destroy({
+            where:{
+                id
+            }
+        })
+        if(!good){
+            throw new global.errs.AuthFailed('删除失败')
+        }
         return good
     }
 }

@@ -13,7 +13,7 @@ class ParameterException extends HttpException{
         super()
         this.code = 400
         this.msg = msg || '参数错误'
-        this.errorCode = errorCode || 10000
+        this.errorCode = errorCode || 102
     }
 }
 
@@ -53,24 +53,6 @@ class Forbbiden extends HttpException{
     }
 }
 
-class LikeError extends HttpException {
-    constructor(msg, error_code) {
-        super()
-        this.code = 400
-        this.msg = "你已经点赞过"
-        this.error_code = 60001
-    }
-}
-
-class DislikeError extends HttpException {
-    constructor(msg, error_code) {
-        super()
-        this.code = 400
-        this.msg = "你已取消点赞"
-        this.error_code = 60002
-    }
-}
-
 
 module.exports = {
     HttpException,
@@ -79,6 +61,4 @@ module.exports = {
     NotFound,
     AuthFailed,
     Forbbiden,
-    LikeError,
-    DislikeError
 }

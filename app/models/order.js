@@ -4,26 +4,63 @@ const {Goods} = require('./goods')
 const {User} = require('./user')
 const {Address} = require('./address')
 class Order extends Model {
-    static async getType(typeId){
-        const type = await Order.findOne({
-            where:{
-                id:typeId
-            }
+    static async getOrderList(start = 1, limit = 10,user_id,glasses_id,order_number,order_state, product_type,aftersale_state){
+        
+        const orders = await Order.findAndCountAll({
+            where: {
+                user_id: {
+                    [Op.like]:'%' + user_id + '%'
+                },
+                order_number: {
+                    [Op.like]:'%' + order_number + '%'
+                },
+                glasses_id: {
+                    [Op.like]:'%' + glasses_id + '%'
+                },
+                order_state: order_state >= 0  ? order_state : {[Op.not]:-1,},
+                product_type: product_type >= 0  ? product_type : {[Op.not]:-1,},
+                aftersale_state: aftersale_state >= 0  ? aftersale_state : {[Op.not]:-1,},
+            },
+            offset: (start - 1) * limit,
+            limit,
+            include:[{
+                model:Goods,
+                as: 'glasses'
+            },
+            {
+                model:Address,
+                as: 'address'
+            }]
         })
-        return type
+        if(!orders){
+            throw new global.errs.NotFound('查询失败')
+        }
+        return orders
     }
 
-    static async getTypeList(typeIdList){
-        const types = await Order.findAll({
+    static async findOrder(id){
+        const order = await Order.findOne({
             where:{
-                id: {
-                    [Op.in]:typeIdList
-                }
+                id
             }
         })
+        if(!order){
+            throw new global.errs.NotFound('查询失败')
+        }
+        return order
+    }
 
-
-        return types
+    //修改
+    static async updateOrder(id,data){
+        const order = await Order.update(data,{
+            where:{
+                id
+            }
+        })
+        if(order[0] == 0){
+            throw new global.errs.AuthFailed('失败')
+        }
+        return order
     }
 }
 Order.init({
@@ -48,9 +85,14 @@ Order.init({
     left_axis: Sequelize.DECIMAL,
     right_axis: Sequelize.DECIMAL,
     order_state: Sequelize.INTEGER,
-    aftersale_state: Sequelize.INTEGER,
     order_price: Sequelize.DECIMAL,
+    order_remark: Sequelize.STRING,
+    aftersale_state: Sequelize.INTEGER,
     express_number: Sequelize.STRING,
+    aftersale_remark: Sequelize.STRING,
+    aftersale_price: Sequelize.DECIMAL,
+    aftersale_bcs: Sequelize.STRING,
+    aftersale_express: Sequelize.STRING,
     aftersale_state: Sequelize.INTEGER,
     pay_datetime: Sequelize.DATE,
     send_datetime: Sequelize.DATE,
