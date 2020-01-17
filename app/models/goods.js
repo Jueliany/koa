@@ -74,6 +74,34 @@ class Goods extends Model {
         }
         return good
     }
+    
+    //获取热门商品
+    static async getHotGoods(){
+        const good = await Goods.findAll({
+            where:{
+                type:1
+            },
+            limit:8,
+            order:[['sold_number', 'DESC']]
+        })
+        if(!good){
+            throw new global.errs.NotFound('查询失败')
+        }
+        return good
+    }
+    //获取精选商品
+    static async getChoicenessGoods(){
+        const good = await Goods.findAll({
+            where:{
+                choiceness:1
+            },
+            limit:5,
+        })
+        if(!good){
+            throw new global.errs.NotFound('查询失败')
+        }
+        return good
+    }
 }
 Goods.init({
     id: {
@@ -86,6 +114,7 @@ Goods.init({
     category_id: Sequelize.INTEGER,
     stock_number: Sequelize.INTEGER,
     state: Sequelize.INTEGER,
+    choiceness: Sequelize.INTEGER,
     sold_number: Sequelize.INTEGER,
     brief: Sequelize.STRING,
     detail: Sequelize.STRING,

@@ -4,37 +4,15 @@ const {Goods} = require('../../models/goods')
 const {Type} = require('../../models/type')
 const common = require('../../common/common')
 const router = new Router({
-    prefix:'/v1/goods'
+    prefix:'/mini/goods'
 });
 const {
     Auth
 } = require('../../../middlewares/auth')
 
-router.post('/list',new Auth(8).m, async (ctx,next)=>{
+router.post('/list', async (ctx,next)=>{
     const body = ctx.request.body;
     const good = await Goods.getGoodList(body.pageSize, body.pageNum, body.type, body.category, body.state, body.keyWord)
-
-    ctx.body = {
-        resultCode:0,
-        resultMsg: 'OK',
-        data: good
-    }
-    
-})
-
-router.post('/add',new Auth(8).m, async (ctx,next)=>{
-    const body = ctx.request.body;
-    const good = await Goods.addGood(body)
-    ctx.body = {
-        resultCode:0,
-        resultMsg: '添加成功',
-        data: good
-    }
-})
-
-router.post('/find',new Auth(8).m, async (ctx,next)=>{
-    const body = ctx.request.body;
-    const good = await Goods.findGood(body.id)
     ctx.body = {
         resultCode:0,
         resultMsg: 'OK',
@@ -42,25 +20,36 @@ router.post('/find',new Auth(8).m, async (ctx,next)=>{
     }
 })
 
-router.post('/update',new Auth(8).m, async (ctx,next)=>{
+//分类商品
+router.post('/catalogGoods', async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.updateGood(body.id,body.data)
+    const good = await Goods.getGoodList(20, body.pageNum, 1, body.category, 1,"")
     ctx.body = {
         resultCode:0,
-        resultMsg: '修改成功',
+        resultMsg: 'OK',
         data: good
     }
 })
-
-router.post('/delete',new Auth(8).m, async (ctx,next)=>{
+//热门商品
+router.get('/hot', async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.deleteGood(body.id)
+    const good = await Goods.getHotGoods()
+
     ctx.body = {
         resultCode:0,
-        resultMsg: '删除成功',
+        resultMsg: 'OK',
         data: good
     }
 })
+//精选商品
+router.get('/choiceness', async (ctx,next)=>{
+    const body = ctx.request.body;
+    const good = await Goods.getChoicenessGoods()
 
-
+    ctx.body = {
+        resultCode:0,
+        resultMsg: 'OK',
+        data: good
+    }
+})
 module.exports = router

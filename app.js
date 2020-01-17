@@ -2,7 +2,7 @@ const Koa = require('koa');
 const parser = require('koa-bodyparser');
 const InitManager = require('./core/init')
 const catchError = require('./middlewares/exception')
-require('./app/models/order')
+require('./app/models/banner')
 const app = new Koa();
 app.use(async (ctx, next)=> {
     ctx.set('Access-Control-Allow-Origin', '*');

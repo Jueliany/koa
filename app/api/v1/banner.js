@@ -1,10 +1,10 @@
 const Router = require('koa-router')
 const {PositveInterValidator} = require('../../validator/validator')
-const {Goods} = require('../../models/goods')
+const {Banner} = require('../../models/banner')
 const {Type} = require('../../models/type')
 const common = require('../../common/common')
 const router = new Router({
-    prefix:'/v1/goods'
+    prefix:'/v1/banner'
 });
 const {
     Auth
@@ -12,55 +12,63 @@ const {
 
 router.post('/list',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.getGoodList(body.pageSize, body.pageNum, body.type, body.category, body.state, body.keyWord)
+    const banner = await Banner.getBannerList(body.pageSize, body.pageNum, body.state, body.goods_id,body.keyWord)
 
     ctx.body = {
         resultCode:0,
         resultMsg: 'OK',
-        data: good
+        data: banner
     }
-    
+})
+
+router.get('/mini/list', async (ctx,next)=>{
+    const body = ctx.request.body;
+    const banner = await Banner.getBannerList(100, 1, 1)
+
+    ctx.body = {
+        resultCode:0,
+        resultMsg: 'OK',
+        data: banner
+    }
 })
 
 router.post('/add',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.addGood(body)
+    const banner = await Banner.addBanner(body)
     ctx.body = {
         resultCode:0,
         resultMsg: '添加成功',
-        data: good
+        data: banner
     }
 })
 
 router.post('/find',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.findGood(body.id)
+    const banner = await Banner.findBanner(body.id)
     ctx.body = {
         resultCode:0,
         resultMsg: 'OK',
-        data: good
+        data: banner
     }
 })
 
 router.post('/update',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.updateGood(body.id,body.data)
+    const banner = await Banner.updateBanner(body.id,body.data)
     ctx.body = {
         resultCode:0,
         resultMsg: '修改成功',
-        data: good
+        data: banner
     }
 })
 
 router.post('/delete',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const good = await Goods.deleteGood(body.id)
+    const banner = await Banner.deleteBanner(body.id)
     ctx.body = {
         resultCode:0,
         resultMsg: '删除成功',
-        data: good
+        data: banner
     }
 })
-
-
 module.exports = router
