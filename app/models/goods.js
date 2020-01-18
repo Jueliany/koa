@@ -4,7 +4,6 @@ const {Category} = require('./category')
 class Goods extends Model {
     //后台列表查询
     static async getGoodList(limit = 10,start = 1,type = 1,categoryId = -1,state = -1,keyWord = ""){
-        console.log(state)
         const good = await Goods.findAndCountAll({
             where: {
                 id : {
@@ -29,7 +28,26 @@ class Goods extends Model {
         }
         return good
     }
-    //详情
+    //获取商品下拉
+    static async getGoodSelectList(){
+        const good = await Goods.findAll({
+            where: {
+                id : {
+                    [Op.not]:1,
+                },
+                type: 1,
+                state: 1
+            },
+            attributes:['id','name']
+        
+        })
+        if(!good){
+            throw new global.errs.NotFound('查询失败')
+        }
+        return good
+    }
+
+    //获取商品详情
     static async findGood(id){
         const good = await Goods.findOne({
             where:{

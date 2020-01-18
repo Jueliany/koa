@@ -2,6 +2,7 @@ const Koa = require('koa');
 const parser = require('koa-bodyparser');
 const InitManager = require('./core/init')
 const catchError = require('./middlewares/exception')
+//handle request entity too large
 require('./app/models/banner')
 const app = new Koa();
 app.use(async (ctx, next)=> {
@@ -15,7 +16,12 @@ app.use(async (ctx, next)=> {
     }
   });
 app.use(catchError)
-app.use(parser()) 
+app.use(parser({
+  formLimit:"5mb",
+  jsonLimit:"5mb",
+  textLimit:"5mb",
+  enableTypes: ['json', 'form', 'text']
+})) 
 InitManager.initCore(app);
 app.listen(3000)
 console.log('app is starting !')

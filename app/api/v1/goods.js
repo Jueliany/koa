@@ -62,5 +62,16 @@ router.post('/delete',new Auth(8).m, async (ctx,next)=>{
     }
 })
 
+router.get('/select',new Auth(8).m, async (ctx,next)=>{
+    const good = await Goods.getGoodSelectList()
+
+    ctx.body = {
+        resultCode:0,
+        resultMsg: 'OK',
+        data: good
+    }
+    
+})
+
 
 module.exports = router

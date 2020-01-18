@@ -1,7 +1,6 @@
 const Router = require('koa-router')
 const {PositveInterValidator} = require('../../validator/validator')
 const {Goods} = require('../../models/goods')
-const {Type} = require('../../models/type')
 const common = require('../../common/common')
 const router = new Router({
     prefix:'/mini/goods'
