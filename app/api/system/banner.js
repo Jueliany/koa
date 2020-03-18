@@ -1,10 +1,9 @@
 const Router = require('koa-router')
 const {PositveInterValidator} = require('../../validator/validator')
 const {Banner} = require('../../models/banner')
-const {Type} = require('../../models/type')
 const common = require('../../common/common')
 const router = new Router({
-    prefix:'/v1/banner'
+    prefix:'/system/banner'
 });
 const {
     Auth

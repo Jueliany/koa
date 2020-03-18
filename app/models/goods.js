@@ -53,11 +53,26 @@ class Goods extends Model {
             where:{
                 id
             },
-            attributes:['name','type','category_id','price','stock_number','state','brief','detail','url',]
+            attributes:['name','type','category_id','price','stock_number','sold_number','state','brief','detail','url',]
         })
         if(!good){
             throw new global.errs.NotFound('查询失败')
         }
+        return good
+    }
+    //小程序获取商品详情
+    static async findMiniGood(id){
+        const good = await Goods.findOne({
+            where:{
+                id
+            },
+         })
+        if(!good){
+            throw new global.errs.NotFound('查询失败')
+        }
+        good.increment('look_number').then(function(user){
+        console.log('success');
+        })
         return good
     }
     //新增
@@ -107,19 +122,53 @@ class Goods extends Model {
         }
         return good
     }
-    //获取精选商品
-    static async getChoicenessGoods(){
+    
+    //获取下单商品
+    static async getBookingGoodList(gid,lid){
+        const goods = await Goods.findOne({
+            where: {
+                id : gid,
+                state: 1
+            },
+            attributes:['id','name','price','category_id','stock_number','url']
+    
+        })
+        let glass = 0;
+        if(lid != 1){
+            glass = await Goods.findOne({
+                where: {
+                    id : lid,
+                    state: 1
+                },
+                attributes:['id','name','price','category_id','stock_number','url']    
+            })
+        }
+        
+        if(!goods){
+            throw new global.errs.NotFound('查询失败')
+        }
+        let info = {goods,glass}
+        return info
+    }
+
+    //获取推荐商品
+    static async getRecommendGoods(category_id){
         const good = await Goods.findAll({
             where:{
-                choiceness:1
+                category_id,
+                type:1
             },
-            limit:5,
+            limit:2,
+            order:[['sold_number', 'DESC']]
         })
         if(!good){
             throw new global.errs.NotFound('查询失败')
         }
         return good
     }
+    
+
+
 }
 Goods.init({
     id: {
@@ -131,6 +180,7 @@ Goods.init({
     name: Sequelize.STRING,
     category_id: Sequelize.INTEGER,
     stock_number: Sequelize.INTEGER,
+    look_number: Sequelize.INTEGER,
     state: Sequelize.INTEGER,
     choiceness: Sequelize.INTEGER,
     sold_number: Sequelize.INTEGER,

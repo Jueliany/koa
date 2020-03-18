@@ -76,8 +76,8 @@ class TokenValidator extends LinValidator {
         this.secret = [
             //    validator.js
             new Rule('isOptional'),
-            new Rule('isLength', '至少6个字符', {
-                min: 6,
+            new Rule('isLength', '至少5个字符', {
+                min: 5,
                 max: 128
             })
         ]

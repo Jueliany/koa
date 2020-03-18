@@ -15,7 +15,7 @@ const {Auth} = require('../../../middlewares/auth')
 
 
 const router = new Router({
-    prefix:'/v1/token'
+    prefix:'/system/token'
 });
 router.post('/',async (ctx)=>{
         const v = await new TokenValidator().validate(ctx)
@@ -23,6 +23,9 @@ router.post('/',async (ctx)=>{
         switch (v.get('body.type')) {
             case LoginType.USER_EMAIL:
                 token = await emailLogin(v.get('body.account'),v.get('body.secret') )
+                break;
+            case LoginType.ADMIN_NICKNAME:
+                token = await usernameLogin(v.get('body.account'),v.get('body.secret') )
                 break;
             case LoginType.USER_MINI_PROGRAM:
                 token = await WXManager.codeToToken(v.get('body.account'))
@@ -55,6 +58,12 @@ async function emailLogin(account, secret) {
     return token = generateToken(user.id, Auth.USER)
 }
 
+
+async function usernameLogin(account, secret) {
+    const user = await
+        User.verifyUserPassword(account, secret)
+    return token = generateToken(user.id, Auth.USER)
+}
 
 
 module.exports = router

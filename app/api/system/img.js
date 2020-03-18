@@ -4,7 +4,7 @@ const {Goods} = require('../../models/goods')
 const common = require('../../common/common')
 var fs = require('fs')
 const router = new Router({
-    prefix:'/v1/img'
+    prefix:'/system/img'
 });
 const {
     Auth

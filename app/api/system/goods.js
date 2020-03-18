@@ -1,30 +1,22 @@
 const Router = require('koa-router')
 const {PositveInterValidator} = require('../../validator/validator')
-const {Order} = require('../../models/order')
+const {Goods} = require('../../models/goods')
+const common = require('../../common/common')
 const router = new Router({
-    prefix:'/v1/order'
+    prefix:'/system/goods'
 });
 const {
     Auth
 } = require('../../../middlewares/auth')
 
 router.post('/list',new Auth(8).m, async (ctx,next)=>{
-    const {
-        aftersale_state,
-        glasses_id,
-        order_number,
-        order_state,
-        pageNum,
-        pageSize,
-        product_type,
-        user_id,
-    } = ctx.request.body;
-    const orders = await Order.getOrderList(pageNum,pageSize,user_id,glasses_id,order_number,order_state, product_type,aftersale_state)
+    const body = ctx.request.body;
+    const good = await Goods.getGoodList(body.pageSize, body.pageNum, body.type, body.category, body.state, body.keyWord)
 
     ctx.body = {
         resultCode:0,
         resultMsg: 'OK',
-        data: orders
+        data: good
     }
     
 })
@@ -41,22 +33,44 @@ router.post('/add',new Auth(8).m, async (ctx,next)=>{
 
 router.post('/find',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const order = await Order.findOrder(body.id)
+    const good = await Goods.findGood(body.id)
     ctx.body = {
         resultCode:0,
         resultMsg: 'OK',
-        data: order
+        data: good
     }
 })
 
 router.post('/update',new Auth(8).m, async (ctx,next)=>{
     const body = ctx.request.body;
-    const order = await Order.updateOrder(body.id,body.data)
+    const good = await Goods.updateGood(body.id,body.data)
     ctx.body = {
         resultCode:0,
         resultMsg: '修改成功',
-        data: order
+        data: good
     }
 })
+
+router.post('/delete',new Auth(8).m, async (ctx,next)=>{
+    const body = ctx.request.body;
+    const good = await Goods.deleteGood(body.id)
+    ctx.body = {
+        resultCode:0,
+        resultMsg: '删除成功',
+        data: good
+    }
+})
+
+router.get('/select',new Auth(8).m, async (ctx,next)=>{
+    const good = await Goods.getGoodSelectList()
+
+    ctx.body = {
+        resultCode:0,
+        resultMsg: 'OK',
+        data: good
+    }
+    
+})
+
 
 module.exports = router
